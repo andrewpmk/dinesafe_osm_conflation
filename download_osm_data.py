@@ -10,9 +10,9 @@ query = """
 [out:json][timeout:120];
 area["wikidata"="Q172"]->.searchArea;
 (
-    node["amenity"~"^(restaurant|fast_food)$"](area.searchArea);
-    way["amenity"~"^(restaurant|fast_food)$"](area.searchArea);
-    relation["amenity"~"^(restaurant|fast_food)$"](area.searchArea);
+    node["amenity"~"^(restaurant|fast_food|pharmacy|ice_cream)$"](area.searchArea);
+    way["amenity"~"^(restaurant|fast_food|pharmacy|ice_cream)$"](area.searchArea);
+    relation["amenity"~"^(restaurant|fast_food|pharmacy|ice_cream)$"](area.searchArea);
     node["shop"~"^(convenience|supermarket)$"](area.searchArea);
     way["shop"~"^(convenience|supermarket)$"](area.searchArea);
     relation["shop"~"^(convenience|supermarket)$"](area.searchArea);
@@ -34,6 +34,11 @@ for node in result.nodes:
         "lon": node.lon,
         "type": "node",
         "id": node.id,
+        "addr:housenumber": node.tags.get("addr:housenumber", ""),
+        "addr:street": node.tags.get("addr:street", ""),
+        "addr:unit": node.tags.get("addr:unit", ""),
+        "addr:city": node.tags.get("addr:city", ""),
+        "addr:postcode": node.tags.get("addr:postcode", ""),
         "tags": json.dumps(node.tags)
     })
 
@@ -45,6 +50,11 @@ for way in result.ways:
         "lon": way.center_lon,
         "type": "way",
         "id": way.id,
+        "addr:housenumber": way.tags.get("addr:housenumber", ""),
+        "addr:street": way.tags.get("addr:street", ""),
+        "addr:unit": way.tags.get("addr:unit", ""),
+        "addr:city": way.tags.get("addr:city", ""),
+        "addr:postcode": way.tags.get("addr:postcode", ""),        
         "tags": json.dumps(way.tags)
     })
 
@@ -57,14 +67,17 @@ for rel in result.relations:
         "lon": rel.center_lon,
         "type": "relation",
         "id": rel.id,
+        "addr:housenumber": rel.tags.get("addr:housenumber", ""),
+        "addr:street": rel.tags.get("addr:street", ""),
+        "addr:unit": rel.tags.get("addr:unit", ""),
+        "addr:city": rel.tags.get("addr:city", ""),
+        "addr:postcode": rel.tags.get("addr:postcode", ""),
         "tags": json.dumps(rel.tags)
     })
 
-print(pois)
-
 # Export data to csv
 with open('toronto_pois.csv', 'w', newline='', encoding='utf-8') as csvfile:
-    fieldnames = ['name', 'lat', 'lon', 'type', 'id', 'tags']
+    fieldnames = ['name', 'lat', 'lon', 'type', 'id', 'addr:housenumber', 'addr:street', 'addr:unit', 'addr:city', 'addr:postcode', 'tags']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
     writer.writeheader()
