@@ -101,6 +101,9 @@ toronto_pois_df = pd.read_csv(toronto_pois_file, encoding='utf-8')
 
 toronto_pois_df.to_sql('toronto_pois', conn, index=False)
 
+matches = 0
+no_matches = 0
+
 # Iterate through each row in dinesafe using sqlite
 cur = conn.cursor()
 cur.execute("SELECT _id, latitude, longitude, [Establishment Name], [Establishment Address] FROM dinesafe")
@@ -122,10 +125,20 @@ while True:
         closest_match, closest_score = process_matches(latitude, longitude, establishment_name, establishment_address, poi_rows)
         if closest_score >= 50:  # threshold for a good match
             print(f"Found POI for dinesafe ID {establishment_name} {establishment_address} at ({latitude}, {longitude}): {closest_match} with score {closest_score}".encode('cp1252', errors='replace').decode('cp1252'))
+            matches += 1
         else:
             print(f"No good match found for dinesafe ID {establishment_name} {establishment_address} at ({latitude}, {longitude})".encode('cp1252', errors='replace').decode('cp1252'))
+            no_matches += 1
     else:
         print(f"No POI found for dinesafe ID {dinesafe_id} at ({latitude}, {longitude})".encode('cp1252', errors='replace').decode('cp1252'))
+        no_matches += 1
+
+# Print summary
+print(f"Total matches found: {matches}")
+print(f"Total no matches found: {no_matches}")
+print(f"Total dinesafe entries processed: {matches + no_matches}")
+print(f"Total POIs in toronto_pois: {len(toronto_pois_df)}")
+print(f"Match percentage: {matches / (matches + no_matches) * 100:.2f}%")
 
 # close connection
 conn.close()

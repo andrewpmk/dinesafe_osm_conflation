@@ -10,12 +10,12 @@ query = """
 [out:json][timeout:120];
 area["wikidata"="Q172"]->.searchArea;
 (
-    node["amenity"~"^(restaurant|fast_food|pharmacy|ice_cream)$"](area.searchArea);
-    way["amenity"~"^(restaurant|fast_food|pharmacy|ice_cream)$"](area.searchArea);
-    relation["amenity"~"^(restaurant|fast_food|pharmacy|ice_cream)$"](area.searchArea);
-    node["shop"~"^(convenience|supermarket)$"](area.searchArea);
-    way["shop"~"^(convenience|supermarket)$"](area.searchArea);
-    relation["shop"~"^(convenience|supermarket)$"](area.searchArea);
+    node["amenity"~"^(cafe|fast_food|ice_cream|restaurant|pharmacy)$"](area.searchArea);
+    way["amenity"~"^(restaurant|fast_food|pharmacy|ice_cream|cafe)$"](area.searchArea);
+    relation["amenity"~"^(restaurant|fast_food|pharmacy|ice_cream|cafe)$"](area.searchArea);
+    node["shop"~"^(alcohol|convenience|frozen_food|supermarket|variety_store)$"](area.searchArea);
+    way["shop"~"^(alcohol|convenience|frozen_food|supermarket|variety_store)$"](area.searchArea);
+    relation["shop"~"^(alcohol|convenience|frozen_food|supermarket|variety_store)$"](area.searchArea);
 );
 out center;
 """
